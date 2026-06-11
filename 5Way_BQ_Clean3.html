@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5-Way Body Quantification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Josefin+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#e6e6e6;color:#293533;-webkit-text-size-adjust:100%;}
+header{background:#293533;color:white;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:relative;}
+.hdr-title{display:flex;flex-direction:column;}
+.hdr-body{font-size:1.4rem;font-weight:900;color:#ffffff;letter-spacing:0.04em;line-height:1;}
+.hdr-quant{font-size:0.7rem;font-weight:700;color:#6d8a85;letter-spacing:0.22em;text-transform:uppercase;margin-top:1px;}
+.hdr-sub{font-size:0.68rem;color:#6d8a85;margin-top:3px;opacity:0.9;}
+.hdr-logo-removed{display:none;}}
+.wrap{max-width:980px;margin:0 auto;padding:18px 14px;}
+.card{background:#ffffff;border-radius:10px;box-shadow:0 1px 6px rgba(41,53,51,0.15);margin-bottom:16px;overflow:hidden;}
+.ch{background:#40514e;color:#ffffff;padding:8px 16px;font-weight:700;font-size:0.76rem;letter-spacing:0.08em;text-transform:uppercase;}
+.cb{padding:14px 16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
+.fi{display:flex;flex-direction:column;gap:3px;}
+label{font-size:0.72rem;font-weight:600;color:#576d69;}
+input,select{padding:8px 10px;border:1.5px solid #c8d4d2;border-radius:5px;font-size:16px;width:100%;-webkit-appearance:none;color:#293533;background:#fff;}
+input:focus,select:focus{outline:none;border-color:#576d69;box-shadow:0 0 0 2px rgba(87,109,105,0.2);}
+.sl{font-size:0.65rem;font-weight:700;color:#576d69;text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 7px;border-bottom:2px solid #e6e6e6;padding-bottom:3px;}
+.btn{background:#40514e;color:#ffffff;border:none;padding:11px 24px;border-radius:7px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px;touch-action:manipulation;}
+.btn:active{background:#293533;}
+.btn-import{background:#576d69;color:#ffffff;border:none;padding:11px 24px;border-radius:7px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:6px;touch-action:manipulation;}
+.btn-import:active{background:#40514e;}
+.btn-print{background:#576d69;color:white;border:none;padding:8px 18px;border-radius:6px;font-size:0.82rem;font-weight:700;cursor:pointer;touch-action:manipulation;}
+.btn-print:active{background:#40514e;}
+@media(max-width:640px){.g3{grid-template-columns:1fr 1fr;}}
+@media(max-width:400px){.g3{grid-template-columns:1fr;}}
+.report{display:none;}
+.report.show{display:block;background:#ffffff;}
+@media print{
+  body,.report{background:white!important;}
+  .input-section,header{display:none!important;}
+  .report{display:block!important;}
+  .page{page-break-after:always;padding:18px 24px;}
+  .page:last-child{page-break-after:avoid;}
+}
+.report{max-width:860px;margin:0 auto;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.page{padding:26px 34px;background:#ffffff;min-width:600px;}
+.rpt-hdr{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #40514e;padding-bottom:9px;margin-bottom:13px;}
+.rpt-logo{font-size:0.95rem;font-weight:900;color:#293533;letter-spacing:0.05em;line-height:1;}
+.rpt-logo span{color:#6d8a85;}
+.rpt-sub{font-size:0.62rem;color:#6d8a85;margin-top:2px;}
+.rpt-meta{text-align:right;font-size:0.68rem;color:#576d69;}
+.rpt-meta strong{color:#293533;font-size:0.78rem;display:block;}
+.ath-bar{background:#40514e;color:#ffffff;padding:8px 12px;border-radius:7px;display:flex;margin-bottom:13px;}
+.ab-i{flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.2);padding:0 10px;}
+.ab-i:first-child{padding-left:3px;}.ab-i:last-child{border-right:none;}
+.ab-l{font-size:0.56rem;opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;}
+.ab-v{font-size:0.82rem;font-weight:700;margin-top:1px;}
+.rpt-sec{font-size:0.63rem;font-weight:700;color:#40514e;text-transform:uppercase;letter-spacing:0.1em;border-bottom:2px solid #c8d4d2;padding-bottom:3px;margin:13px 0 8px;}
+.comp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:9px;}
+.comp-box{border-radius:6px;padding:8px 6px;text-align:center;}
+.comp-box.muscle  {background:#edf2f1;border-top:3px solid #1a6b55;}
+.comp-box.adipose {background:#f2eeec;border-top:3px solid #b04a2a;}
+.comp-box.bone    {background:#f2f0eb;border-top:3px solid #b09a20;}
+.comp-box.skin    {background:#eceff2;border-top:3px solid #2058a0;}
+.comp-box.residual{background:#efefef;border-top:3px solid #5a5a5a;}
+.comp-lbl{font-size:0.58rem;font-weight:700;color:#576d69;text-transform:uppercase;margin-bottom:2px;}
+.comp-kg{font-size:1rem;font-weight:800;color:#293533;}
+.comp-pct{font-size:0.68rem;color:#6d8a85;font-weight:600;}
+.bar-track{height:14px;border-radius:7px;overflow:hidden;display:flex;margin-bottom:5px;}
+.bar-seg{height:100%;}
+.bar-leg{display:flex;gap:10px;flex-wrap:wrap;}
+.bar-li{display:flex;align-items:center;gap:3px;font-size:0.62rem;color:#576d69;}
+.bar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:3px;}
+.soma-row{display:flex;gap:7px;}
+.soma-box{flex:1;background:#edf2f1;border-radius:6px;padding:8px 6px;text-align:center;border-bottom:3px solid #576d69;}
+.soma-val{font-size:1.2rem;font-weight:800;color:#40514e;}
+.soma-lbl{font-size:0.58rem;font-weight:700;color:#576d69;text-transform:uppercase;}
+.soma-desc{font-size:0.58rem;color:#6d8a85;margin-top:1px;}
+.soma-note{text-align:center;font-size:0.7rem;font-weight:700;color:#40514e;margin-top:6px;}
+.met-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.met-box{background:#edf2f1;border-radius:5px;padding:6px 8px;}
+.met-l{font-size:0.57rem;color:#6d8a85;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;}
+.met-v{font-size:0.92rem;font-weight:800;color:#293533;}
+.met-s{font-size:0.58rem;color:#6d8a85;}
+.ztable{width:100%;border-collapse:collapse;font-size:0.7rem;}
+.ztable th{background:#e6e6e6;padding:4px 6px;text-align:left;font-size:0.6rem;text-transform:uppercase;color:#576d69;letter-spacing:0.04em;}
+.ztable td{padding:3px 6px;border-bottom:1px solid #e6e6e6;vertical-align:middle;}
+.ztable tr:nth-child(even) td{background:#f5f6f5;}
+.zgh td{background:#c8d4d2!important;font-size:0.6rem;font-weight:700;color:#293533;text-transform:uppercase;letter-spacing:0.05em;padding:3px 6px;}
+.zbc{width:90px;}
+.zbw{position:relative;height:8px;background:#c8d4d2;border-radius:4px;}
+.zbm{position:absolute;left:50%;top:0;width:1px;height:8px;background:#6d8a85;}
+.zbf{position:absolute;top:1px;height:6px;border-radius:3px;}
+.zp{color:#2e524a;font-weight:700;}.zn{color:#6b3a2e;font-weight:700;}
+.meas-cols{font-size:0.72rem;max-width:480px;}
+.mg h4{font-size:0.6rem;font-weight:700;text-transform:uppercase;color:#40514e;border-bottom:1px solid #c8d4d2;padding-bottom:2px;margin-bottom:4px;}
+.mg h4.sub{margin-top:7px;}
+.mr{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dotted #c8d4d2;}
+.mn{color:#576d69;}.mv{font-weight:600;color:#293533;}
+.rpt-foot{margin-top:14px;padding-top:8px;border-top:1px solid #c8d4d2;display:flex;justify-content:space-between;font-size:0.58rem;color:#6d8a85;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-title">
+    <div style="line-height:1;display:flex;align-items:baseline;gap:0;">
+      <span style="font-family:'Righteous',sans-serif;font-size:1.7rem;color:#ffffff;letter-spacing:0.01em;">BODY</span>
+      <span style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.72rem;color:#a8bfbc;letter-spacing:0.28em;text-transform:uppercase;margin-left:8px;align-self:center;">QUANTIFICATION</span>
+    </div>
+    <div class="hdr-sub" style="margin-top:3px;">5-Way Fractionation · ISAK Level 1+</div>
+  </div>
+  <div id="printBtnWrap" style="display:none">
+    <button class="btn-print" onclick="printReport()">🖨 Print / Save PDF</button>
+  </div>
+</header>
+
+<div class="wrap input-section">
+<div class="card">
+  <div class="ch">Personal Information</div>
+  <div class="cb">
+    <div class="g3">
+      <div class="fi"><label>First Name</label><input id="firstName" value="John"></div>
+      <div class="fi"><label>Last Name</label><input id="lastName" value="Smith"></div>
+      <div class="fi"><label>Birthday</label><input type="date" id="dob" value="1989-08-06"></div>
+      <div class="fi"><label>Sex</label><select id="sex"><option value="1">M</option><option value="2">F</option></select></div>
+      <div class="fi"><label>Race</label><select id="race"><option value="1">Asian</option><option value="2">African American</option><option value="3" selected>White</option></select></div>
+      <div class="fi"><label>Date of Test</label><input type="date" id="testDate" value="2026-03-05"></div>
+      <div class="fi"><label>Sport</label><input id="sport" value="FB"></div>
+      <div class="fi"><label>Position</label><input id="position" value="Long Snapper"></div>
+      <div class="fi"><label>Anthropometrist</label><input id="anthro" value="KA"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ch">Data Entry</div>
+  <div class="cb">
+    <div class="sl">Basic Measurements</div>
+    <div class="g3">
+      <div class="fi"><label>Body Mass (kg)</label><input type="number" id="mass" step="0.1" value="107.9"></div>
+      <div class="fi"><label>Height / Stretch Stature (cm)</label><input type="number" id="stature" step="0.1" value="191.6"></div>
+      <div class="fi"><label>Sitting Height (cm)</label><input type="number" id="sitHeight" step="0.1" value="100"></div>
+    </div>
+    <div class="sl">Skinfolds (mm)</div>
+    <div class="g3">
+      <div class="fi"><label>Triceps</label><input type="number" id="sf_triceps" step="0.1" value="8.6"></div>
+      <div class="fi"><label>Subscapular</label><input type="number" id="sf_subscap" step="0.1" value="14"></div>
+      <div class="fi"><label>Supraspinale</label><input type="number" id="sf_supraspinale" step="0.1" value="15.5"></div>
+      <div class="fi"><label>Abdominal</label><input type="number" id="sf_abdominal" step="0.1" value="20"></div>
+      <div class="fi"><label>Thigh</label><input type="number" id="sf_thigh" step="0.1" value="9"></div>
+      <div class="fi"><label>Calf</label><input type="number" id="sf_calf" step="0.1" value="7.3"></div>
+    </div>
+    <div class="sl">Girths (cm)</div>
+    <div class="g3">
+      <div class="fi"><label>Head</label><input type="number" id="g_head" step="0.1" value="58.2"></div>
+      <div class="fi"><label>Arm Relaxed</label><input type="number" id="g_armRelaxed" step="0.1" value="38"></div>
+      <div class="fi"><label>Arm Flexed &amp; Tensed</label><input type="number" id="g_armFlexed" step="0.1" value="40"></div>
+      <div class="fi"><label>Forearm</label><input type="number" id="g_forearm" step="0.1" value="32.5"></div>
+      <div class="fi"><label>Chest</label><input type="number" id="g_chest" step="0.1" value="116.3"></div>
+      <div class="fi"><label>Waist</label><input type="number" id="g_waist" step="0.1" value="98"></div>
+      <div class="fi"><label>Hips</label><input type="number" id="g_hips" step="0.1" value="112.9"></div>
+      <div class="fi"><label>Thigh 1cm Gluteal</label><input type="number" id="g_upperThigh" step="0.1" value="68"></div>
+      <div class="fi"><label>Thigh Middle</label><input type="number" id="g_midThigh" step="0.1" value="62.5"></div>
+      <div class="fi"><label>Calf</label><input type="number" id="g_calf" step="0.1" value="39.4"></div>
+    </div>
+    <div class="sl">Breadths (cm)</div>
+    <div class="g3">
+      <div class="fi"><label>Biacromial</label><input type="number" id="b_biacromial" step="0.1" value="45.8"></div>
+      <div class="fi"><label>Biiliocristal</label><input type="number" id="b_biiliocrestal" step="0.1" value="31.9"></div>
+      <div class="fi"><label>Transverse Chest</label><input type="number" id="b_transChest" step="0.1" value="34.2"></div>
+      <div class="fi"><label>A-P Chest Depth</label><input type="number" id="b_apChest" step="0.1" value="22.3"></div>
+      <div class="fi"><label>Humerus</label><input type="number" id="b_humerus" step="0.1" value="7.5"></div>
+      <div class="fi"><label>Femur</label><input type="number" id="b_femur" step="0.1" value="11.8"></div>
+    </div>
+    <button class="btn" onclick="calculate()">Calculate &amp; Generate Report</button>
+    <div style="margin-top:14px;border-top:2px solid #e6e6e6;padding-top:12px;">
+      <div class="sl">📋 Paste From Data Entry Sheet</div>
+      <p style="font-size:0.72rem;color:#6d8a85;margin-bottom:8px;">Copy the Avg column from the <strong>5-Way Body Quantification Data Entry</strong> sheet and paste below.</p>
+      <textarea id="pasteBox" rows="6" placeholder="Paste column data here (one value per line)..." style="width:100%;padding:10px;border:1.5px solid #c8d4d2;border-radius:5px;font-size:16px;font-family:monospace;resize:vertical;-webkit-user-select:text;user-select:text;color:#293533;"></textarea>
+      <button class="btn-import" onclick="importPaste()">Import Pasted Data</button>
+      <div id="importMsg" style="font-size:0.75rem;margin-top:6px;color:#576d69;"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="report" id="report">
+  <div class="page">
+    <div class="rpt-hdr">
+      <div><div class="rpt-logo">
+        <span style="font-family:'Righteous',sans-serif;font-size:1.25rem;color:#41514e;letter-spacing:0.01em;">BODY</span><span style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.58rem;color:#41514e;letter-spacing:0.24em;text-transform:uppercase;margin-left:6px;vertical-align:middle;">QUANTIFICATION</span>
+      </div>
+      <div class="rpt-sub">ISAK Level 1+ · 5-Way Body Composition Analysis</div></div>
+      <div class="rpt-meta" id="rm1"></div>
+    </div>
+    <div class="ath-bar" id="ra1"></div>
+    <div class="rpt-sec">5-Compartment Body Composition — Kerr (1991)</div>
+    <div class="comp-grid" id="rc"></div>
+    <div class="bar-track" id="rb"></div>
+    <div class="bar-leg" id="rl"></div>
+    <div class="two-col">
+      <div>
+        <div class="rpt-sec">Somatotype — Heath-Carter</div>
+        <div class="soma-row" id="rs"></div>
+        <div class="soma-note" id="rsn"></div>
+      </div>
+      <div>
+        <div class="rpt-sec">Key Metrics</div>
+        <div class="met-grid" id="rmet"></div>
+      </div>
+    </div>
+    <div class="rpt-foot">
+      <span>Body Quantification · Win@BodyQuantification.com · © Body Quantification</span>
+      
+    </div>
+  </div>
+  <div class="page">
+    <div class="rpt-hdr">
+      <div><div class="rpt-logo">
+        <span style="font-family:'Righteous',sans-serif;font-size:1.25rem;color:#41514e;letter-spacing:0.01em;">BODY</span><span style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.58rem;color:#41514e;letter-spacing:0.24em;text-transform:uppercase;margin-left:6px;vertical-align:middle;">QUANTIFICATION</span>
+      </div>
+      <div class="rpt-sub">ISAK Level 1+ · Phantom Z-Scores &amp; Raw Measurements</div></div>
+      <div class="rpt-meta" id="rm2"></div>
+    </div>
+    <div class="ath-bar" id="ra2"></div>
+    <div class="rpt-sec">Phantom Z-Scores (Height-Normalised to 170.18 cm)</div>
+    <table class="ztable" id="rzt">
+      <thead><tr>
+        <th>Measurement</th><th>Value</th><th>Unit</th>
+        <th class="zbc">Distribution</th><th>Z-Score</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="rpt-sec" style="margin-top:14px">Raw &amp; Derived Measurements</div>
+    <div class="meas-cols" id="rmeas"></div>
+        <div style="margin-top:12px;padding-top:8px;border-top:1px solid #c8d4d2;font-size:0.62rem;color:#576d69;line-height:1.5;">
+      <strong style="color:#40514e;">References</strong><br>
+      Carter JEL, Heath BH. <em>Somatotyping: Development and Applications</em>. Cambridge: Cambridge University Press; 1990.<br>
+      Ross WD, Kerr DA. Fractionation of body mass: A new method to use in nutrition, clinic and sports medicine. <em>Apunts Med Esport</em>. 1991;28:175–188.
+    </div>
+<div class="rpt-foot">
+      <span>Body Quantification · Win@BodyQuantification.com · © Body Quantification</span>
+      
+    </div>
+  </div>
+</div>
+
+<script>
+const PH={
+  mass:{m:64.583,s:8.603},sitHeight:{m:89.923,s:3.790},
+  sf_triceps:{m:15.4,s:4.470},sf_subscap:{m:17.2,s:5.070},
+  sf_supraspinale:{m:15.4,s:4.670},sf_abdominal:{m:25.4,s:7.780},
+  sf_thigh:{m:27.4,s:8.330},sf_calf:{m:16.0,s:4.670},
+  g_head:{m:55.5,s:1.440},g_armRelaxed:{m:26.9,s:2.330},
+  g_armFlexed:{m:27.9,s:2.370},g_forearm:{m:25.1,s:1.510},
+  g_chest:{m:87.9,s:5.180},g_waist:{m:71.9,s:5.450},
+  g_hips:{m:94.9,s:5.760},g_upperThigh:{m:55.3,s:4.930},
+  g_midThigh:{m:52.0,s:4.350},g_calf:{m:35.9,s:2.770},
+  b_biacromial:{m:38.0,s:1.920},b_biiliocrestal:{m:28.84,s:1.750},
+  b_transChest:{m:27.92,s:1.740},b_apChest:{m:17.50,s:1.380},
+  b_humerus:{m:6.48,s:0.350},b_femur:{m:9.52,s:0.480},
+  muscleMass:{m:38.44,s:5.660},boneMass:{m:10.37,s:2.080},
+  adiposeMass:{m:25.10,s:7.800},corrArm:{m:25.84,s:1.883},
+  corrChest:{m:82.41,s:8.490},corrThigh:{m:46.51,s:5.720},corrCalf:{m:32.73,s:2.720},
+};
+const pZ=(k,v,s)=>{const p=PH[k];return p?((v*(170.18/s))-p.m)/p.s:null;};
+const mZ=(m,s)=>((m*Math.pow(170.18/s,3))-PH.mass.m)/PH.mass.s;
+const f=(n,d=1)=>isNaN(n)||n===null?'—':(+n).toFixed(d);
+const gv=id=>parseFloat(document.getElementById(id).value);
+
+const NUMERIC_MAP=[
+  'mass','stature','sitHeight',
+  'sf_triceps','sf_subscap','sf_supraspinale','sf_abdominal','sf_thigh','sf_calf',
+  'g_head','g_armRelaxed','g_armFlexed','g_forearm','g_chest','g_waist','g_hips',
+  'g_upperThigh','g_midThigh','g_calf',
+  'b_biacromial','b_biiliocrestal','b_transChest','b_apChest','b_humerus','b_femur'
+];
+
+function importPaste(){
+  const raw=document.getElementById('pasteBox').value.trim();
+  const msg=document.getElementById('importMsg');
+  if(!raw){msg.style.color='#7a3a2e';msg.textContent='Nothing to import.';return;}
+  const nums=raw.split(/\r?\n/).map(l=>l.trim())
+    .filter(l=>l!==''&&!isNaN(parseFloat(l.replace(',','.'))))
+    .map(l=>parseFloat(l.replace(',','.')));
+  let filled=0;
+  for(let i=0;i<NUMERIC_MAP.length&&i<nums.length;i++){
+    const el=document.getElementById(NUMERIC_MAP[i]);
+    if(el){el.value=nums[i];filled++;}
+  }
+  msg.style.color=filled>0?'#2e524a':'#7a3a2e';
+  msg.textContent=filled>0?`✅ Imported ${filled} fields successfully.`:'No numeric values found.';
+  document.getElementById('pasteBox').value='';
+}
+
+function printReport(){
+  const inner=document.getElementById('report').innerHTML;
+  const styles=document.querySelector('style').innerHTML;
+  const printStyles=`@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.input-section,header,#printBtnWrap{display:none!important;}.page{page-break-after:always;padding:18px 24px;}.page:last-child{page-break-after:avoid;}}`;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>5-Way Body Quantification Report</title><style>${styles}${printStyles}</style></head><body>${inner}</body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(isMobile){
+    const a=document.createElement('a');
+    a.href=url;a.download='5Way_BQ_Report.html';a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+    const tip=document.createElement('div');
+    tip.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#40514e;color:white;padding:12px 18px;border-radius:8px;font-size:0.8rem;text-align:center;z-index:9999;max-width:300px;line-height:1.5;';
+    tip.innerHTML='Report downloaded!<br>Open the file then use Share → Print to save as PDF.';
+    document.body.appendChild(tip);
+    setTimeout(()=>tip.remove(),5000);
+  } else {
+    const iframe=document.createElement('iframe');
+    iframe.style.cssText='position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;';
+    document.body.appendChild(iframe);
+    iframe.src=url;
+    iframe.onload=function(){
+      try{
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+      }catch(e){
+        window.open(url,'_blank');
+      }
+      setTimeout(()=>{document.body.removeChild(iframe);URL.revokeObjectURL(url);},60000);
+    };
+  }
+}
+
+function calculate(){
+  const fn  = document.getElementById('firstName').value;
+  const ln  = document.getElementById('lastName').value;
+  const sp  = document.getElementById('sport').value;
+  const pos = document.getElementById('position').value;
+  const ant = document.getElementById('anthro').value;
+  const sex = parseInt(document.getElementById('sex').value);
+  const dob = new Date(document.getElementById('dob').value);
+  const tdt = new Date(document.getElementById('testDate').value);
+  const age = (tdt-dob)/(365.25*24*3600*1000);
+  const tdStr = tdt.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  const mass    = gv('mass');
+  const stature = gv('stature');
+  const sitH    = gv('sitHeight');
+  const sfTri   = gv('sf_triceps');
+  const sfSub   = gv('sf_subscap');
+  const sfSup   = gv('sf_supraspinale');
+  const sfAbd   = gv('sf_abdominal');
+  const sfThi   = gv('sf_thigh');
+  const sfCal   = gv('sf_calf');
+  const gHead   = gv('g_head');
+  const gArmR   = gv('g_armRelaxed');
+  const gArmF   = gv('g_armFlexed');
+  const gFore   = gv('g_forearm');
+  const gChest  = gv('g_chest');
+  const gWaist  = gv('g_waist');
+  const gHips   = gv('g_hips');
+  const gUThi   = gv('g_upperThigh');
+  const gMThi   = gv('g_midThigh');
+  const gCalf   = gv('g_calf');
+  const bBiac   = gv('b_biacromial');
+  const bBiil   = gv('b_biiliocrestal');
+  const bTrans  = gv('b_transChest');
+  const bAP     = gv('b_apChest');
+  const bHum    = gv('b_humerus');
+  const bFem    = gv('b_femur');
+
+  const corrArm   = gArmR  - (Math.PI * sfTri / 10);
+  const corrChest = gChest - (Math.PI * sfSub / 10);
+  const corrThigh = gMThi  - (Math.PI * sfThi / 10);
+  const corrCalf  = gCalf  - (Math.PI * sfCal / 10);
+  const corrArmMeso  = gArmF - (sfTri / 10);
+  const corrCalfMeso = gCalf - (sfCal / 10);
+
+  const Db     = 1.09665 - (0.00103*sfTri) - (0.00056*sfSub) - (0.00054*sfAbd);
+  const pctFat = (4.95/Db) - 4.50;
+  const FM     = pctFat * mass;
+  const FFM    = mass - FM;
+
+  const skinMass     = mass * 0.04353;
+  const residualMass = mass * 0.12568;
+  const adiposeMass  = FM / 0.598;
+  const boneMass     = 0.0005427 * stature * (bHum*2 + bFem*2 + bBiac + bBiil);
+  const muscleMass   = 0.00001510 * stature * (corrArm**2 + corrChest**2 + corrThigh**2 + corrCalf**2);
+  const muscleToBone = muscleMass / boneMass;
+
+  const sfX  = (sfTri+sfSub+sfSup) * (170.18/stature);
+  const endo = -0.7182 + 0.1451*sfX - 0.00068*sfX**2 + 0.0000014*sfX**3;
+  const meso = 0.858*bHum + 0.601*bFem + 0.188*corrArmMeso + 0.161*corrCalfMeso - 0.131*stature + 4.50;
+  const HWR  = stature / Math.pow(mass, 1/3);
+  const ecto = HWR>=40.75 ? 0.732*HWR-28.58 : HWR>=38.25 ? 0.463*HWR-17.63 : 0.1;
+
+  const bmi   = mass / Math.pow(stature/100, 2);
+  const whr   = gWaist / gHips;
+  const wsr   = gWaist / stature;
+  const sum6  = sfTri+sfSub+sfSup+sfAbd+sfThi+sfCal;
+  const shRat = bBiac / bBiil;
+
+  const metaHTML = `<strong>${fn} ${ln}</strong>${tdStr}<br>Anthropometrist: ${ant}`;
+  document.getElementById('rm1').innerHTML = metaHTML;
+  document.getElementById('rm2').innerHTML = metaHTML;
+
+  const athHTML = [
+    {l:'Athlete',  v:`${fn} ${ln}`},
+    {l:'Age',      v:`${age.toFixed(1)} yrs`},
+    {l:'Sex',      v:sex===1?'Male':'Female'},
+    {l:'Sport',    v:sp},
+    {l:'Position', v:pos},
+    {l:'Test Date',v:tdStr},
+  ].map(x=>`<div class="ab-i"><span class="ab-l">${x.l}</span><span class="ab-v">${x.v}</span></div>`).join('');
+  document.getElementById('ra1').innerHTML = athHTML;
+  document.getElementById('ra2').innerHTML = athHTML;
+
+  const comps = [
+    {cls:'muscle',  lbl:'Muscle',  kg:muscleMass,  col:'#1a6b55'},
+    {cls:'adipose', lbl:'Adipose', kg:adiposeMass, col:'#b04a2a'},
+    {cls:'bone',    lbl:'Bone',    kg:boneMass,    col:'#b09a20'},
+    {cls:'skin',    lbl:'Skin',    kg:skinMass,    col:'#2058a0'},
+    {cls:'residual',lbl:'Residual',kg:residualMass,col:'#5a5a5a'},
+  ];
+  document.getElementById('rc').innerHTML = comps.map(c=>`
+    <div class="comp-box ${c.cls}">
+      <div class="comp-lbl">${c.lbl}</div>
+      <div class="comp-kg">${f(c.kg)} kg</div>
+      <div class="comp-pct">${f(c.kg/mass*100)}%</div>
+    </div>`).join('');
+
+  document.getElementById('rb').innerHTML = comps.map(c=>`<div class="bar-seg" style="width:${c.kg/mass*100}%;background:${c.col}"></div>`).join('');
+  document.getElementById('rl').innerHTML = comps.map(c=>`<div class="bar-li"><div class="bar-dot" style="background:${c.col}"></div>${c.lbl} ${f(c.kg/mass*100)}%</div>`).join('');
+
+  document.getElementById('rs').innerHTML = [
+    {v:endo, l:'Endomorphy', d:'Relative fatness'},
+    {v:meso, l:'Mesomorphy', d:'Musculoskeletal robustness'},
+    {v:ecto, l:'Ectomorphy', d:'Relative linearity'},
+  ].map(s=>`<div class="soma-box"><div class="soma-val">${f(s.v,2)}</div><div class="soma-lbl">${s.l}</div><div class="soma-desc">${s.d}</div></div>`).join('');
+  document.getElementById('rsn').textContent = `${f(endo,1)} — ${f(meso,1)} — ${f(ecto,1)}`;
+
+  document.getElementById('rmet').innerHTML = [
+    {l:'Body Fat %',      v:f(pctFat*100,1)+'%', s:'Katch-McArdle / Siri'},
+    {l:'Fat Mass',        v:f(FM,2)+' kg',        s:''},
+    {l:'Fat-Free Mass',   v:f(FFM,2)+' kg',       s:''},
+    {l:'Sum 6 Skinfolds', v:f(sum6,1)+' mm',      s:''},
+    {l:'Muscle to Bone',  v:f(muscleToBone,2),    s:'Ratio'},
+    {l:'Shoulder/Hip',    v:f(shRat,2),           s:'Biacromial / Biiliocristal'},
+  ].map(m=>`<div class="met-box"><div class="met-l">${m.l}</div><div class="met-v">${m.v}</div><div class="met-s">${m.s}</div></div>`).join('');
+
+  const ZG = [
+    {lbl:'Body Composition', rows:[
+      ['Body Mass',    mass,        'kg', mZ(mass,stature)],
+      ['Adipose Mass', adiposeMass, 'kg', pZ('adiposeMass',adiposeMass,stature)],
+      ['Muscle Mass',  muscleMass,  'kg', pZ('muscleMass',muscleMass,stature)],
+      ['Bone Mass',    boneMass,    'kg', pZ('boneMass',boneMass,stature)],
+    ]},
+    {lbl:'Skinfolds', rows:[
+      ['Triceps SF',      sfTri,'mm', pZ('sf_triceps',sfTri,stature)],
+      ['Subscapular SF',  sfSub,'mm', pZ('sf_subscap',sfSub,stature)],
+      ['Supraspinale SF', sfSup,'mm', pZ('sf_supraspinale',sfSup,stature)],
+      ['Abdominal SF',    sfAbd,'mm', pZ('sf_abdominal',sfAbd,stature)],
+      ['Front Thigh SF',  sfThi,'mm', pZ('sf_thigh',sfThi,stature)],
+      ['Medial Calf SF',  sfCal,'mm', pZ('sf_calf',sfCal,stature)],
+    ]},
+    {lbl:'Girths', rows:[
+      ['Head',             gHead, 'cm', pZ('g_head',gHead,stature)],
+      ['Arm Relaxed',      gArmR, 'cm', pZ('g_armRelaxed',gArmR,stature)],
+      ['Arm Flexed',       gArmF, 'cm', pZ('g_armFlexed',gArmF,stature)],
+      ['Forearm',          gFore, 'cm', pZ('g_forearm',gFore,stature)],
+      ['Chest',            gChest,'cm', pZ('g_chest',gChest,stature)],
+      ['Waist',            gWaist,'cm', pZ('g_waist',gWaist,stature)],
+      ['Hips',             gHips, 'cm', pZ('g_hips',gHips,stature)],
+      ['Thigh 1cm Gluteal',gUThi, 'cm', pZ('g_upperThigh',gUThi,stature)],
+      ['Thigh Middle',     gMThi, 'cm', pZ('g_midThigh',gMThi,stature)],
+      ['Calf',             gCalf, 'cm', pZ('g_calf',gCalf,stature)],
+    ]},
+    {lbl:'Breadths & Corrected Girths', rows:[
+      ['Biacromial',       bBiac, 'cm', pZ('b_biacromial',bBiac,stature)],
+      ['Biiliocristal',    bBiil, 'cm', pZ('b_biiliocrestal',bBiil,stature)],
+      ['Trans Chest',      bTrans,'cm', pZ('b_transChest',bTrans,stature)],
+      ['A-P Chest Depth',  bAP,   'cm', pZ('b_apChest',bAP,stature)],
+      ['Humerus Breadth',  bHum,  'cm', pZ('b_humerus',bHum,stature)],
+      ['Femur Breadth',    bFem,  'cm', pZ('b_femur',bFem,stature)],
+      ['Corr. Arm Girth',  corrArm,  'cm', pZ('corrArm',corrArm,stature)],
+      ['Corr. Chest Girth',corrChest,'cm', pZ('corrChest',corrChest,stature)],
+      ['Corr. Thigh Girth',corrThigh,'cm', pZ('corrThigh',corrThigh,stature)],
+      ['Corr. Calf Girth', corrCalf, 'cm', pZ('corrCalf',corrCalf,stature)],
+    ]},
+  ];
+
+  const zMax = 4;
+  let tb = '';
+  ZG.forEach(grp=>{
+    tb += `<tr class="zgh"><td colspan="5">${grp.lbl}</td></tr>`;
+    grp.rows.forEach(([nm,val,unit,z])=>{
+      const zs  = z!==null ? f(z,2) : '—';
+      const cls = z>0 ? 'zp' : 'zn';
+      const pct = z!==null ? Math.min(Math.abs(z)/zMax,1)*50 : 0;
+      const side= z>0 ? 'left:50%' : 'right:50%';
+      const bar = `<div class="zbw"><div class="zbm"></div><div class="zbf" style="width:${pct}%;${side};background:${z>0?'#1a8c60':'#cc3333'}"></div></div>`;
+      tb += `<tr><td>${nm}</td><td>${f(val,1)}</td><td>${unit}</td><td class="zbc">${bar}</td><td class="${cls}">${zs}</td></tr>`;
+    });
+  });
+  document.querySelector('#rzt tbody').innerHTML = tb;
+
+  const mr = (n,v) => `<div class="mr"><span class="mn">${n}</span><span class="mv">${v}</span></div>`;
+  document.getElementById('rmeas').innerHTML = `
+    <div class="mg">
+      <h4>Derived Values</h4>
+      ${mr('Body Density',f(Db,5)+' g/ml')}
+      ${mr('Sum of 6 Skinfolds',f(sum6,1)+' mm')}
+    </div>
+    <div class="mg" style="margin-top:10px;">
+      <h4>Proportionality Indices</h4>
+      ${mr('Height-Weight Ratio (HWR)',f(HWR,3))}
+      ${mr('Waist-Hip Ratio (WHR)',f(whr,3))}
+      ${mr('Waist-Stature Ratio (WSR)',f(wsr,3))}
+    </div>`;
+
+  document.getElementById('report').classList.add('show');
+  document.getElementById('printBtnWrap').style.display = 'block';
+  document.getElementById('report').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
